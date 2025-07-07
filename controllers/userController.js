@@ -1,4 +1,4 @@
-const categoryModel = require("../models/categoryModel")
+const categoryModel = require("../models/userDetailsModel")
 const userModel = require("../models/userModel")
 
 const getAllUsers = async (req, res)=>{

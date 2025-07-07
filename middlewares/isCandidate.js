@@ -1,4 +1,4 @@
-const isSeller = async (req,res,next)=>{
+const isCandidate = async (req,res,next)=>{
     const user = req.user;
     if (user.role !== "seller") {
         return res.status(403).json({
@@ -8,4 +8,4 @@ const isSeller = async (req,res,next)=>{
     }
     next()
 }
-module.exports = isSeller
+module.exports = isCandidate

@@ -12,8 +12,6 @@ const isLoggedIn = async (req,res, next)=>{
             message: "Please provide a token"
         })
     }
-    // const array = "myname"
-    // console.log(array.split("y"));
     
     const decoded = await jwt.verify(token, process.env.jwt_secret)
     console.log(decoded);
