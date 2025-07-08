@@ -1,8 +1,6 @@
 const express = require("express")
 const userRouter = express.Router()
 const {getAllUsers, getSingleUser,deleteUser, addUser} = require("../controllers/userController.js")
-const MiddlewareOne = require("../middlewares/middleware1.js")
-const MiddlewareTwo = require("../middlewares/middleware2.js")
 
 userRouter.get("/",MiddlewareOne,MiddlewareTwo, getAllUsers)
 userRouter.post("/", addUser)

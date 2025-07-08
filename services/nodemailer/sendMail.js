@@ -3,9 +3,9 @@ const transporter = require("./transporter");
 
 const sendVerificationEmail = (email,userFirstName, token)=>{
     const options = {
-        from: "Jumia Jumia@gmail.com",
+        from: "CareerFuse Careerfuse@gmail.com",
         to: email,
-        replyTo: "jumia@gmail.com",
+        replyTo: "careerfuse@gmail.com",
         subject: "Verify your Account",
         html: `
         <div>

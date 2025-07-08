@@ -1,6 +1,7 @@
 const express = require("express")
 const { addBlog } = require("../controllers/jobController")
-const blogRouter = express.Router()
+const { getAllAppicationsForCurrentUser } = require("../controllers/appController")
+const appRouter = express.Router()
 
-blogRouter.post("/", addBlog)
-module.exports = blogRouter
+appRouter.post("/", getAllAppicationsForCurrentUser)
+module.exports = appRouter
