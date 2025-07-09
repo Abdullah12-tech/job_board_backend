@@ -10,11 +10,28 @@ const jobSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: "users"
     },
+    hrEmail: {
+        type: String,
+        required: true
+    },
     datePosted: {
         type: String,
     },
     skills: {
         type: String,
+    },
+    type: {
+        type: String
+    },
+    workType: {
+        type: String,
+        enums: ['full-time','part-time','contract','remote']
+    },
+    location: {
+        type: String
+    },
+    salary: {
+        type: String
     },
     benefits: {
         type: String,

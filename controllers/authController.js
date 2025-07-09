@@ -162,6 +162,14 @@ const login = async (req, res,next) => {
         next(err)
     }
 }
+// const findCurrentUser = async ()=>{
+//     try {
+//         const token = req.headers
+//     } catch (err) {
+//         console.log(err);
+//         next(err);
+//     }
+// }
 
 module.exports = {
     signUp,

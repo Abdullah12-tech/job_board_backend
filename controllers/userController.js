@@ -15,33 +15,47 @@ const getAllUsers = async (req, res)=>{
         users
     })
 }
-
-const getSingleUser = (req, res)=>{
-    res.json("single user")
-    console.log("user added");
-    
-}
-const addUser = async (req,res) =>{
+const getAllEmployers = async (req,res,next)=>{
     try {
-        const user = await userModel.create(req.body)
-        if (!user) {
+        
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
+}
+const getAllCandidates = async (req,res,next)=>{
+    try {
+        const candidates = await userModel.find({role: "candidate"})
+        if(!candidates){
             return res.status(400).json({
-                status: "error",
-                message: "user not added"
+                message: "No candidate found",
+                status: "error"
             })
         }
-        res.status(201).json({
-            status: "success",
-            message: "user has been added",
-            user
+        return res.status(400).json(candidates);
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
+}
+const deleteUser = async (req,res,next)=>{
+    try {
+        const {id} = req.params;
+        const deletedUser = await userModel.findByIdAndDelete(id);
+        if(deletedUser){
+            return res.status(400).json({
+                message: "user not deleted",
+                status: "error"
+            })
+        }
+        return res.status(200).json({
+            message: "User has been deleted",
+            status: "error"
         })
     } catch (err) {
         console.log(err);
+        next(err);
     }
-}
-
-const deleteUser = (req, res)=>{
-    res.json("deleted user")
 }
 
 module.exports = {

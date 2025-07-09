@@ -38,6 +38,22 @@ const deleteJob = async (req,res,next)=>{
     }
 }
 
+const filterJobs = async (req,res,next)=>{
+    const {type,location,salary,workType} = req.query;
+    try {
+        const filteredJobs = await jobModel.find({type: type,location: location,salary: salary,workType: workType})
+        if(!fiteredJobs){
+            return res.status(400).json({
+                message: "No job found with the filter",
+                status: "error"
+            })
+        }
+        return res.status(200).json(filteredJobs);
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 const updateJob = async (req,res,next)=>{
     try {
         const job = await jobModel.findByIdAndUpdate({...req.body});
@@ -93,5 +109,6 @@ module.exports = {
     deleteJob,
     updateJob,
     getAllJobs,
-    getJobById
+    getJobById,
+    filterJobs
 }
