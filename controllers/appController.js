@@ -17,6 +17,33 @@ const getAllAppicationsForCurrentUser = async (req,res,next)=>{
     }
 }
 
+const applyJob = async (req,res,next)=>{
+    if(!req.file){
+        return res.status(400).json({
+            message: "file not found"
+        })
+    }
+    const resume = req.file.path;
+    try {
+        const {jobID} = req.params
+        const application = await appModel.create({...req.body,resume: resume,applicants: req.user._id, jobID: jobID});
+        if(!application){
+            return res.status(400).json({
+                message: "Application not submitted successfully",
+                status: "error"
+            })
+        }
+        return res.status(200).json({
+            message: "Application has been sent",
+            status: "success"
+        })
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
+}
+
 module.exports = {
-    getAllAppicationsForCurrentUser
+    getAllAppicationsForCurrentUser,
+    applyJob
 }

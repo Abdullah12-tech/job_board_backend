@@ -9,8 +9,8 @@ const appSchema = new mongoose.Schema({
         enums: ['applied','viewed','saved','expired','rejected']
     },
     appliedAt: {
-        type: String,
-        required: true
+        type: Date,
+        default: Date.now()
     },
     resume: {
         type: String,

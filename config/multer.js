@@ -9,5 +9,5 @@ const storage = new CloudinaryStorage({
         transformation: [{width: 500,height: 500}]
     }
 })
-const uploadImage = multer(storage);
-module.exports = uploadImage
+const uploadResume = multer(storage);
+module.exports = uploadResume

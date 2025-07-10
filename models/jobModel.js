@@ -12,37 +12,44 @@ const jobSchema = new mongoose.Schema({
     },
     hrEmail: {
         type: String,
-        required: true
-    },
-    datePosted: {
-        type: String,
     },
     skills: {
-        type: String,
+        type: [String],
     },
     type: {
-        type: String
+        type: String,
+        enums: ['Full-time','Internship','Temporary','Contract','Permanent','Part-time']
     },
     workType: {
         type: String,
-        enums: ['full-time','part-time','contract','remote']
+        enums: ['Hybrid','Onsite','Remote']
     },
     location: {
-        type: String
+        type: String,
+        default: "Remote"
     },
-    salary: {
+    salaryRange: {
+        min: Number,
+        max: Number,
+        currency:{
+            type: String,
+            default: "USD"
+        }
+    },
+    category: {
         type: String
     },
     benefits: {
-        type: String,
+        type: [String],
     },
     requirements: {
-        type: String,
+        type: [String],
     },
     datePosted: {
         type: String,
+        default: Date.now()
     },
-    skills: {
+    deadline: {
         type: String,
     },
 })

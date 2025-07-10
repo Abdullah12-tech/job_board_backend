@@ -1,7 +1,8 @@
-const express = require("express")
-const { addBlog } = require("../controllers/jobController")
-const { getAllAppicationsForCurrentUser } = require("../controllers/appController")
+const express = require("express");
+const { getAllAppicationsForCurrentUser, applyJob } = require("../controllers/appController");
+const uploadResume = require("../config/multer");
 const appRouter = express.Router()
 
-appRouter.post("/", getAllAppicationsForCurrentUser)
+appRouter.get("/", getAllAppicationsForCurrentUser)
+appRouter.post("/", uploadResume.single("resume"), applyJob)
 module.exports = appRouter

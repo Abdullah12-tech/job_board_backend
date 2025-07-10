@@ -4,4 +4,5 @@ const upload = async (req,res,next) =>{
         res.status(400).json({
             message: "You must add an image"
         })
-    }}
+    }
+}
