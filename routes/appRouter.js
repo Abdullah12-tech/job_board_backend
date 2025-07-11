@@ -1,8 +1,11 @@
 const express = require("express");
-const { getAllAppicationsForCurrentUser, applyJob } = require("../controllers/appController");
+const { getAllApplicationsForCurrentUser, applyJob } = require("../controllers/appController");
 const uploadResume = require("../config/multer");
-const appRouter = express.Router()
+const isLoggedIn = require("../middlewares/isLoggedIn");
 
-appRouter.get("/", getAllAppicationsForCurrentUser)
-appRouter.post("/", uploadResume.single("resume"), applyJob)
-module.exports = appRouter
+const appRouter = express.Router();
+
+appRouter.get("/", getAllApplicationsForCurrentUser);
+appRouter.post("/:jobID",isLoggedIn, uploadResume.single("resume"), applyJob);
+
+module.exports = appRouter;

@@ -15,6 +15,9 @@ const appSchema = new mongoose.Schema({
     resume: {
         type: String,
     },
+    coverLetter: {
+        type: String
+    },
     jobID: {
         type: mongoose.Schema.ObjectId,
         ref: "jobs"

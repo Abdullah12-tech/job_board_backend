@@ -75,7 +75,7 @@ const updateJob = async (req,res,next)=>{
 
 const getAllJobs = async (req,res,next)=>{
     try {
-        const jobs = await jobModel.find();
+        const jobs = await jobModel.find().populate("postedBy")
         if(!jobs){
             return res.status(400).json({
                 message: "No jobs found",
@@ -88,22 +88,37 @@ const getAllJobs = async (req,res,next)=>{
         next(err);
     }
 }
-const getJobById = async (req,res,next)=>{
-    try {
-        const {id} = req.params;
-        const job = await jobModel.findById(id);
-        if(!job){
-            return res.status(400).json({
-                message: "job not found",
-                status: "error"
-            })
-        }
-        return res.status(200).json(job);
-    } catch (err) {
-        console.log(err);
-        next(err);
+const getJobById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Get the job and populate the 'postedBy' field (User)
+    const job = await jobModel.findById(id).populate('postedBy');
+
+    if (!job) {
+      return res.status(404).json({
+        message: "Job not found",
+        status: "error"
+      });
     }
-}
+
+    // Get the employer details using postedBy (User)
+    const employer = await employerModel.findOne({ userId: job.postedBy._id });
+
+    // Optional: add employer details (like companyName) to the job response
+    const jobWithCompany = {
+      ...job._doc,
+      companyName: employer?.companyName || "Unknown Company",
+      companyWebsite: employer?.companyWebsite || null,
+      companyLogoUrl: employer?.companyLogoUrl || null,
+    };
+
+    return res.status(200).json(jobWithCompany);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
 module.exports = {
     postJob,
     deleteJob,

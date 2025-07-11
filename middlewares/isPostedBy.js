@@ -16,3 +16,4 @@ const isPostedBy = async (req,res,next)=>{
         next(err);
     }
 }
+module.exports = isPostedBy

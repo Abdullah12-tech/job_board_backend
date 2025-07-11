@@ -4,19 +4,20 @@ const userModel = require("../models/userModel");
 const sendVerificationEmail = require("../services/nodemailer/sendMail");
 const randomGenerate = require("../utils/randomGenerate");
 const sendPasswordResetEmail = require("../services/nodemailer/passResetMail");
+const CandidateModel = require("../models/CandidateModel");
+const EmployerModel = require("../models/EmployerModel");
 const signUp = async (req, res,next) => {
-    const { password, email, name } = req.body;
+    const { password, email, name,role,...details } = req.body;
     try {
         const salt = await bcrypt.genSalt(10)
         const token = randomGenerate(8);
         const hashedPassword = await bcrypt.hash(password, salt)
         const verificationExp = Date.now() + 3000000
-        const user = await userModel.create({ ...req.body, password: hashedPassword, verificationToken: token, verificationExp: verificationExp })
-        if (!user) {
-            return res.status(400).json({
-                message: "User not successfully signed up",
-                status: "error",
-            })
+        const user = await userModel.create({ ...req.body, password: hashedPassword, verificationToken: token, verificationExp: verificationExp,role })
+        if(role === "candidate"){
+            await CandidateModel.create({userId: user._id, ...details})
+        }else if(role === "employer"){
+            await EmployerModel.create({userId: user._id, ...details})
         }
         const userFirstName = name.split(" ")[0]
         sendVerificationEmail(email, userFirstName, token)
@@ -146,8 +147,13 @@ const login = async (req, res,next) => {
                 status: "error"
             })
         }
-
-        const accessToken = jwt.sign({ email: user.email, id: user._id }, process.env.jwt_secret, {
+        if(!user.isVerified){
+            return res.status(400).json({
+                message: "Email not verified",
+                status: "error"
+            })
+        }
+        const accessToken = jwt.sign({ email: user.email,role: user.role, id: user._id }, process.env.jwt_secret, {
             expiresIn: process.env.jwt_expires
         })
 
