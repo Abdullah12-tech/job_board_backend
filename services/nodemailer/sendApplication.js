@@ -1,14 +1,32 @@
-const transporter = require("./transporter")
-const sendApplicationFeedback = async ({ applicantEmail, applicantName, jobTitle, companyName }) => {
-  const htmlTemplate = `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Application Received</title>
-      <style>
-        body {
+const { isValidEmail } = require("../../utils/validators");
+const transporter = require("./transporter");
+
+const sendApplicationFeedback = async ({
+    applicantEmail,
+    applicantName,
+    jobTitle,
+    companyName
+}) => {
+    try {
+        // Validate recipient email
+        if (!applicantEmail) {
+            throw new Error("No recipient email provided");
+        }
+        if (!isValidEmail(applicantEmail)) {
+            throw new Error("Invalid recipient email format");
+        }
+
+        console.log(`Preparing to send email to: ${applicantEmail}`);
+
+        const htmlTemplate = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Application Received</title>
+        <style>
+          body {
           font-family: Arial, sans-serif;
           color: #333;
           line-height: 1.6;
@@ -39,34 +57,38 @@ const sendApplicationFeedback = async ({ applicantEmail, applicantName, jobTitle
           text-align: center;
           color: #888;
         }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h1>Application Received</h1>
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Application Received</h1>
+          </div>
+          <div class="content">
+            <p>Hi <strong>${applicantName}</strong>,</p>
+            <p>Thank you for applying for the <strong>${jobTitle}</strong> position at <strong>${companyName}</strong>.</p>
+            <p>We've received your application and will review it shortly.</p>
+            <p>Best regards,<br /><strong>${companyName} Team</strong></p>
+          </div>
         </div>
-        <div class="content">
-          <p>Hi <strong>${applicantName}</strong>,</p>
-          <p>Thank you for applying for the <strong>${jobTitle}</strong> position at <strong>${companyName}</strong>.</p>
-          <p>We’ve received your application and our team will review your profile shortly. If you are shortlisted, we’ll be in touch with the next steps.</p>
-          <p>We appreciate your interest and wish you the best of luck!</p>
-          <p>Best regards,<br />
-          <strong>${companyName} Team</strong></p>
-        </div>
-        <div class="footer">
-          This is an automated message. Please do not reply.
-        </div>
-      </div>
-    </body>
-    </html>
-  `;
+      </body>
+      </html>
+    `;
 
-  await transporter.sendMail({
-    from: `"${companyName}" <${process.env.EMAIL_USER}>`,
-    to: applicantEmail,
-    subject: 'Application Received - Thank You!',
-    html: htmlTemplate
-  });
+        const mailOptions = {
+            from: `"${companyName}" <${process.env.EMAIL_FROM}>`,
+            to: applicantEmail,
+            subject: `Application Received for ${jobTitle} at ${companyName}`,
+            html: htmlTemplate
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        console.log(`Email sent to ${applicantEmail}:`, info.messageId);
+        return true;
+    } catch (error) {
+        console.error("Email sending failed:", error.message);
+        throw new Error(`Failed to send confirmation email: ${error.message}`);
+    }
 };
+
 module.exports = sendApplicationFeedback;

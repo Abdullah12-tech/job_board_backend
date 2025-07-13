@@ -71,14 +71,14 @@ const findEmail = async (req,res,next)=>{
     const tokenExpire = Date.now() + 3000000
     try {
         const user = await userModel.findOne({email: email})
-        const userFirstName = user.name.split(" ")[0]
         if (!user) {
             res.status(401).json({
                 message: "Email does not exist",
                 status: "error"
             })
         }
-
+        
+        const userFirstName = user?.name.split(" ")[0]
         await userModel.findByIdAndUpdate(user._id,{
             verificationToken: token,
             verificationExp: tokenExpire,

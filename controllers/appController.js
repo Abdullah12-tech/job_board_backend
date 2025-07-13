@@ -6,7 +6,7 @@ const sendApplicationFeedback = require("../services/nodemailer/sendApplication"
 const getAllApplicationsForCurrentUser = async (req, res, next) => {
   try {
     const user = req.user;
-    const applications = await appModel.find({ applicants: user._id });
+    const applications = await appModel.find({ applicants: user._id }).populate("jobID")
     if (!applications.length) {
       return res.status(400).json({
         message: "No application found for this user",
@@ -27,10 +27,10 @@ const applyJob = async (req, res, next) => {
 
   const resume = req.file.path;
   const {jobID} = req.params;
-  const { fullName, email, phone, linkedIn, coverLetterText } = req.body;
+  const {coverLetterText } = req.body;
 
   try {
-    const userId = req.user._id;
+    const userId = req.user?._id;
 
     const alreadyApplied = await appModel.findOne({ applicants: userId, jobID: jobID });
     if (alreadyApplied) {
@@ -38,10 +38,6 @@ const applyJob = async (req, res, next) => {
     }
 
     const application = await appModel.create({
-      fullName,
-      email,
-      phone,
-      linkedIn,
       coverLetterText,
       resume,
       applicants: userId,
@@ -54,12 +50,18 @@ const applyJob = async (req, res, next) => {
 
     const credentials = await appModel.findById(application._id).populate("jobID applicants");
     const job = await jobModel.findById(credentials.jobID._id).populate("postedBy");
-    const employer = await EmployerModel.findOne({ userId: job.postedBy._id });
+    const employer = await EmployerModel.findOne({userId: job?.postedBy?._id});
+    if(!employer){
+        res.status(400).json({
+            message: "employer not found",
+            status: "error"
+        })
+    }
 
     await sendApplicationFeedback({
-      email: credentials.applicants.email,
-      firstname: credentials.applicants.name?.split(" ")[0] || "Applicant",
-      jobTitle: credentials.jobID.title,
+      applicantEmail: credentials?.applicants?.email,
+      applicantName: credentials?.applicants?.name?.split(" ")[0] || "Applicant",
+      jobTitle: credentials.jobID?.title,
       companyName: employer?.companyName || "the company"
     });
 

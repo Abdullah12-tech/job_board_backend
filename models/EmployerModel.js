@@ -10,6 +10,9 @@ const employerSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    companyEmail: {
+        type: String,
+    },
     companyWebsite: {
         type: String,
         required: true

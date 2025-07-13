@@ -8,6 +8,7 @@ const morgan = require("morgan")
 const errorHandler = require("./middlewares/errorHandler")
 const jobRouter = require("./routes/jobRouter")
 const appRouter = require("./routes/appRouter")
+const candidateRouter = require("./routes/candidateRouter")
 require("./services/nodemailer/transporter")
 app.use(express.json())
 app.use(cors())
@@ -22,6 +23,7 @@ connectToDb()
 app.use("/api/jobs", jobRouter)
 app.use("/api/applications", appRouter)
 app.use("/api/auth", authRouter)
+app.use("/api/candidates", candidateRouter)
 
 
 app.all("/{*any}", (req,res)=>{

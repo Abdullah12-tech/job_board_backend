@@ -1,8 +1,10 @@
+const EmployerModel = require("../models/EmployerModel");
 const jobModel = require("../models/jobModel");
 
 const postJob = async (req,res,next)=>{
     try {
-        const job = await jobModel.create(req.body);
+        const userId = req.user?._id
+        const job = await jobModel.create({...req.body, postedBy: userId});
         if(!job){
             return res.status(400).json({
                 message: "job not posted",
@@ -103,7 +105,7 @@ const getJobById = async (req, res, next) => {
     }
 
     // Get the employer details using postedBy (User)
-    const employer = await employerModel.findOne({ userId: job.postedBy._id });
+    const employer = await EmployerModel.findOne({ userId: job.postedBy?._id});
 
     // Optional: add employer details (like companyName) to the job response
     const jobWithCompany = {

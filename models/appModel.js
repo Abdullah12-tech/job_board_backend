@@ -1,8 +1,9 @@
 const mongoose = require("mongoose")
 const appSchema = new mongoose.Schema({
     applicants: {
-        type: String,
-        required: true
+        type: mongoose.Schema.ObjectId,
+        required: true,
+        ref: "users"
     },
     status: {
         type: String,

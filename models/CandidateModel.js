@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const candidateSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "users",
         required: true
     },
 
@@ -25,7 +25,9 @@ const candidateSchema = new mongoose.Schema({
     },
 
     // You can store resume URL if you add upload later
-    // resumeUrl: { type: String },
+    resume: {
+        type: String
+    },
 
     createdAt: {
         type: Date,
