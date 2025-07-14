@@ -9,6 +9,7 @@ const errorHandler = require("./middlewares/errorHandler")
 const jobRouter = require("./routes/jobRouter")
 const appRouter = require("./routes/appRouter")
 const candidateRouter = require("./routes/candidateRouter")
+const employerRouter = require("./routes/employerRouter")
 require("./services/nodemailer/transporter")
 app.use(express.json())
 app.use(cors())
@@ -24,6 +25,7 @@ app.use("/api/jobs", jobRouter)
 app.use("/api/applications", appRouter)
 app.use("/api/auth", authRouter)
 app.use("/api/candidates", candidateRouter)
+app.use("/api/company", employerRouter)
 
 
 app.all("/{*any}", (req,res)=>{

@@ -17,6 +17,9 @@ const employerSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    location: {
+        type: String,
+    },
     companyLinkedin: {
         type: String
     },
@@ -25,6 +28,9 @@ const employerSchema = new mongoose.Schema({
     },
     companySize: {
         type: String
+    },
+    phone: {
+        type: String,
     },
     industry: {
         type: String

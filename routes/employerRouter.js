@@ -1,3 +1,11 @@
 const express = require("express")
+const isLoggedIn = require("../middlewares/isLoggedIn")
+const isEmployer = require("../middlewares/isEmployer")
+const { getProfile, updateProfile } = require("../controllers/companyController")
+const { updateJob, getJobs } = require("../controllers/jobTry")
 const employerRouter = express.Router()
-employerRouter.patch("/jobs")
+employerRouter.get("/profile", isLoggedIn, isEmployer, getProfile)
+employerRouter.put("/profile", isLoggedIn, isEmployer, updateProfile)
+employerRouter.get("/jobs", isLoggedIn, isEmployer, getJobs)
+employerRouter.put("/jobs/:id", isLoggedIn, isEmployer, updateJob)
+module.exports = employerRouter

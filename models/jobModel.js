@@ -24,6 +24,9 @@ const jobSchema = new mongoose.Schema({
         type: String,
         enums: ['Hybrid','Onsite','Remote']
     },
+    views: {
+        type: Number
+    },
     location: {
         type: String,
         default: "Remote"
