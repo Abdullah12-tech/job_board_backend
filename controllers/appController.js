@@ -2,6 +2,7 @@ const appModel = require("../models/appModel");
 const EmployerModel = require("../models/EmployerModel");
 const jobModel = require("../models/jobModel");
 const sendApplicationFeedback = require("../services/nodemailer/sendApplication");
+const sendEmployerNotification = require("../services/nodemailer/sendEmployerFeedback");
 
 const getAllApplicationsForCurrentUser = async (req, res, next) => {
   try {
@@ -25,9 +26,16 @@ const applyJob = async (req, res, next) => {
     return res.status(400).json({ message: "Resume file not found", status: "error" });
   }
 
-  const resume = req.file.path;
+  console.log("📄 Uploaded resume:", req.file);
+  const resume = req?.file?.url || req?.file?.path;
+  if(!resume){
+    return res.status(400).json({
+      message: "Resume url is missing",
+      status: "error"
+    })
+  }
   const {jobID} = req.params;
-  const {coverLetterText } = req.body;
+  const {coverLetter} = req.body;
 
   try {
     const userId = req.user?._id;
@@ -38,8 +46,8 @@ const applyJob = async (req, res, next) => {
     }
 
     const application = await appModel.create({
-      coverLetterText,
-      resume,
+      coverLetter,
+      resume: resume,
       applicants: userId,
       jobID: jobID
     });
@@ -63,6 +71,14 @@ const applyJob = async (req, res, next) => {
       applicantName: credentials?.applicants?.name?.split(" ")[0] || "Applicant",
       jobTitle: credentials.jobID?.title,
       companyName: employer?.companyName || "the company"
+    });
+    await sendEmployerNotification({
+      employerEmail: credentials?.jobID?.hrEmail,
+      employerName: employer?.companyName,
+      applicantName: credentials?.applicants?.name,
+      jobTitle: credentials?.jobID?.title,
+      resumeLink: application?.resume,
+      coverLetterText
     });
 
     return res.status(200).json({

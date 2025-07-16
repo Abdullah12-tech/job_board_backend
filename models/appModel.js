@@ -15,9 +15,11 @@ const appSchema = new mongoose.Schema({
     },
     resume: {
         type: String,
+        required: [true, "resume is required    "]
     },
     coverLetter: {
-        type: String
+        type: String,
+        required: true
     },
     jobID: {
         type: mongoose.Schema.ObjectId,
