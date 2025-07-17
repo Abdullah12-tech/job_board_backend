@@ -93,6 +93,22 @@ const findEmail = async (req,res,next)=>{
         next(err)
     }
 }
+const fetchCurrentUser = async (req,res,next)=>{
+    try {
+        const userId = req?.user?._id;
+        const user = await userModel.findById(userId).select("name email role")
+        if(!user){
+            return res.status(400).json({
+                message: "User not found",
+                status: "error"
+            })
+        }
+        return res.status(200).json(user);
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
+}
 
 const verifyPasswordReset = async (req,res,next)=>{
     const {token} = req.params
@@ -168,19 +184,12 @@ const login = async (req, res,next) => {
         next(err)
     }
 }
-// const findCurrentUser = async ()=>{
-//     try {
-//         const token = req.headers
-//     } catch (err) {
-//         console.log(err);
-//         next(err);
-//     }
-// }
 
 module.exports = {
     signUp,
     login,
     verifyEmail,
     findEmail,
-    verifyPasswordReset
+    verifyPasswordReset,
+    fetchCurrentUser
 }

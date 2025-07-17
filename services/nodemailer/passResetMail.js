@@ -2,15 +2,15 @@ const transporter = require("./transporter")
 
 const sendPasswordResetEmail = (email,firstName,token) =>{
     const options = {
-        from: "Jumia jumia@gmail.com",
+        from: "JobFuse JobFuse@gmail.com",
         to: email,
-        subject: "Reset your password for jumia Account",
+        subject: "Reset your password for jobfuse Account",
         replyTo: "sheiriffabdullah200@gmail.com",
         html: `
             <div>
                 <h3>Hello ${firstName}</h3>
                 <p>Follow this link to reset your password</p>
-                <a href="${process.env.client_domain}/resetpass/${token}">Reset Password</a>
+                <a href="${process.env.client_domain}/reset-password/${token}">Reset Password</a>
             </div>
         `
     }

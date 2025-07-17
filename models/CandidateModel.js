@@ -34,5 +34,5 @@ const candidateSchema = new mongoose.Schema({
         default: Date.now
     }
 });
-
-module.exports = mongoose.model("candidates", candidateSchema);
+const CandidateModel = mongoose.model("candidates", candidateSchema);
+module.exports = CandidateModel

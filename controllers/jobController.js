@@ -44,7 +44,7 @@ const filterJobs = async (req,res,next)=>{
     const {type,location,salary,workType} = req.query;
     try {
         const filteredJobs = await jobModel.find({type: type,location: location,salary: salary,workType: workType})
-        if(!fiteredJobs){
+        if(!filteredJobs){
             return res.status(400).json({
                 message: "No job found with the filter",
                 status: "error"
@@ -53,6 +53,7 @@ const filterJobs = async (req,res,next)=>{
         return res.status(200).json(filteredJobs);
     } catch (err) {
         console.log(err);
+        next(err);
     }
 }
 

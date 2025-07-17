@@ -39,7 +39,7 @@ const updateJob = async (req, res,next) => {
     };
     const updatedJob = await jobModel.findByIdAndUpdate(jobId, updatedData, { new: true });
     const mappedJob = {
-      id: updatedJob._id,
+      _id: updatedJob._id,
       title: updatedJob.title,
       applicants: updatedJob.applicants || 0,
       status: updatedJob.status || 'Active',
