@@ -22,11 +22,11 @@ const getAllApplicationsForCurrentUser = async (req, res, next) => {
 };
 
 const applyJob = async (req, res, next) => {
-  if (!req.file) {
+  console.log("📄 Uploaded resume:", req.file);
+  if (!req?.file?.pat || !req?.file?.url) {
     return res.status(400).json({ message: "Resume file not found", status: "error" });
   }
 
-  console.log("📄 Uploaded resume:", req.file);
   const resume = req?.file?.url || req?.file?.path;
   if(!resume){
     return res.status(400).json({
