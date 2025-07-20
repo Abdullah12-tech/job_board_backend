@@ -10,4 +10,4 @@ const storage = new CloudinaryStorage({
   },
 })
 const uploadResume = multer({storage});
-module.exports = uploadResume
+module.exports = uploadResume;

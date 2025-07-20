@@ -1,51 +1,63 @@
 const EmployerModel = require("../models/EmployerModel");
 const jobModel = require("../models/jobModel");
 const userModel = require("../models/userModel");
-const getAllEmployers = async (req,res,next)=>{
+const getAllEmployers = async (req, res, next) => {
     try {
-        const employers = await userModel.find({role: "employer"});
-        if(!employers){
-            return res.status(400).json({
-                message: "employer not found",
+        const employers = await userModel.find({ role: "employer" });
+        if (!employers || employers.length === 0) {
+            return res.status(404).json({
+                message: "No employers found",
                 status: "error"
-            })
+            });
         }
-        const employerDetails = await EmployerModel.find({userId: employers?._id}).populate("userId", 'name email role');
-        const jobsPostedByEmployer = await jobModel.find({postedBy: employersDetails?.userId});
-        if(!employerDetails){
-            return res.status(400).json({
-                message: "Employer details not found",
-                status: "error"
-            })
-        }
-        return res.status(400).json(employerDetails, jobsPostedByEmployer);
+
+        // Get employer details and jobs for each employer
+        const employersWithDetails = await Promise.all(employers.map(async (employer) => {
+            const employerDetails = await EmployerModel.findOne({ userId: employer._id })
+                .populate("userId", 'name email role');
+            const jobsPosted = await jobModel.find({ postedBy: employer._id });
+            
+            return {
+                employer: employerDetails,
+                jobs: jobsPosted
+            };
+        }));
+
+        return res.status(200).json({
+            data: employersWithDetails,
+            status: "success"
+        });
     } catch (err) {
         console.log(err);
         next(err);
     }
-}
-const getAllCandidates = async (req,res,next)=>{
+};
+
+const getAllCandidates = async (req, res, next) => {
     try {
-        const candidates = await userModel.find({role: "candidate"})
-        if(!candidates){
-            return res.status(400).json({
-                message: "No candidate found",
+        const candidates = await userModel.find({ role: "candidate" });
+        if (!candidates || candidates.length === 0) {
+            return res.status(404).json({
+                message: "No candidates found",
                 status: "error"
-            })
+            });
         }
-        const candidateDetails = await CandidateModel.find({userId: candidates?._id}).populate("userId", 'name email role')
-        if(!candidateDetails){
-            return res.status(400).json({
-                message: "candidate details not found",
-                status: "error"
-            })
-        }
-        return res.status(400).json(candidateDetails);
+
+        // Get candidate details for each candidate
+        const candidatesWithDetails = await Promise.all(candidates.map(async (candidate) => {
+            return await CandidateModel.findOne({ userId: candidate._id })
+                .populate("userId", 'name email role');
+        }));
+
+        return res.status(200).json({
+            data: candidatesWithDetails,
+            status: "success"
+        });
     } catch (err) {
         console.log(err);
         next(err);
     }
-}
+};
 const deleteUser = async (req,res,next)=>{
     try {
         const userId = req?.user?._id
