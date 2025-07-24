@@ -1,61 +1,107 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+
 const jobSchema = new mongoose.Schema({
     title: {
         type: String,
+        required: [true, 'Job title is required'],
+        trim: true
     },
     description: {
         type: String,
+        required: [true, 'Job description is required']
+    },
+    employer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Employer",
+        required: true
     },
     postedBy: {
-        type: mongoose.Schema.ObjectId,
-        ref: "users"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
     },
     hrEmail: {
         type: String,
+        match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
     skills: {
         type: [String],
+        required: [true, 'Skills are required']
     },
     type: {
         type: String,
-        enums: ['Full-time','Internship','Temporary','Contract','Permanent','Part-time']
+        enum: ['Full-time', 'Part-time', 'Contract', 'Temporary', 'Internship', 'Volunteer'],
+        required: true
     },
     workType: {
         type: String,
-        enums: ['Hybrid','Onsite','Remote']
-    },
-    views: {
-        type: Number
+        enum: ['On-site', 'Remote', 'Hybrid'],
+        required: true
     },
     location: {
         type: String,
-        default: "Remote"
+        required: true
     },
-    salaryRange: {
-        min: Number,
-        max: Number,
-        currency:{
+    salary: {
+        min: {
+            type: Number,
+            required: true
+        },
+        max: {
+            type: Number,
+            required: true
+        },
+        currency: {
             type: String,
             default: "USD"
+        },
+        period: {
+            type: String,
+            enum: ['hourly', 'daily', 'weekly', 'monthly', 'yearly'],
+            default: 'monthly'
         }
     },
     category: {
-        type: String
-    },
-    benefits: {
-        type: [String],
-    },
-    requirements: {
-        type: [String],
-    },
-    datePosted: {
         type: String,
-        default: Date.now()
+        required: true
     },
+    benefits: [String],
+    requirements: [String],
     deadline: {
-        type: String,
+        type: Date,
+        required: true
     },
-})
+    status: {
+        type: String,
+        enum: ['draft', 'published', 'closed', 'archived'],
+        default: 'draft'
+    },
+    isFeatured: {
+        type: Boolean,
+        default: false
+    },
+    views: {
+        type: Number,
+        default: 0
+    },
+    applicationsCount: {
+        type: Number,
+        default: 0
+    }
+}, {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
 
-const jobModel = mongoose.model("jobs", jobSchema)
-module.exports = jobModel
+// Indexes
+jobSchema.index({ title: 'text', description: 'text' });
+jobSchema.index({ employer: 1 });
+jobSchema.index({ postedBy: 1 });
+jobSchema.index({ status: 1 });
+jobSchema.index({ type: 1 });
+jobSchema.index({ workType: 1 });
+jobSchema.index({ category: 1 });
+
+const jobModel = mongoose.model("jobs", jobSchema);
+module.exports = jobModel;

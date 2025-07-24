@@ -58,6 +58,39 @@ const getAllCandidates = async (req, res, next) => {
         next(err);
     }
 };
+const fetchUserById = async (req, res, next) => {
+    const {id} = req.params
+    try {
+        const user = await userModel.findById(id);
+        if(!user){
+            return res.status(400).json({
+                message: "No user found",
+                status:"error"
+            })
+        }
+
+        return res.status(200).json(user);
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
+}; 
+const fetchAllUsers = async (req, res, next) => {
+    try {
+        const user = await userModel.find().select("-password")
+        if(!users){
+            return res.status(400).json({
+                message: "users not found",
+                status:"error"
+            })
+        }
+
+        return res.status(200).json(users);
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
+}; 
 const deleteUser = async (req,res,next)=>{
     try {
         const userId = req?.user?._id
@@ -81,5 +114,7 @@ const deleteUser = async (req,res,next)=>{
 module.exports = {
     getAllCandidates,
     getAllEmployers,
-    deleteUser
+    deleteUser,
+    fetchUserById,
+    fetchAllUsers
 }
