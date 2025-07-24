@@ -5,5 +5,4 @@ const isLoggedIn = require("../middlewares/isLoggedIn");
 
 candidateRouter.get("/", isLoggedIn, getCandidateProfile);
 candidateRouter.patch("/", isLoggedIn, updateCandidateProfile);
-
 module.exports = candidateRouter;

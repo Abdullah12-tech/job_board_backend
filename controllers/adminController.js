@@ -171,7 +171,7 @@ const approveCompany = async (req, res) => {
     }
     
     // Also update user role to employer if not already
-    await userModel.findByIdAndUpdate(company.userId, { role: 'employer' });
+    await userModel.findByIdAndUpdate(company?.userId, { role: 'employer' });
     
     res.status(200).json(company);
   } catch (error) {

@@ -10,4 +10,4 @@ authRouter.post("/verify/:token", verifyEmail);
 authRouter.post("/findEmail", findEmail);
 authRouter.post("/verifyPass/:token", verifyPasswordReset);
 authRouter.post('/resend-verification', resendVerification);
-module.exports = authRouter
+module.exports = authRouter;

@@ -1,6 +1,8 @@
 const EmployerModel = require("../models/EmployerModel");
 const jobModel = require("../models/jobModel");
 const userModel = require("../models/userModel");
+
+
 const getAllEmployers = async (req, res, next) => {
     try {
         const employers = await userModel.find({ role: "employer" });
@@ -33,6 +35,8 @@ const getAllEmployers = async (req, res, next) => {
     }
 };
 
+
+
 const getAllCandidates = async (req, res, next) => {
     try {
         const candidates = await userModel.find({ role: "candidate" });
@@ -58,6 +62,9 @@ const getAllCandidates = async (req, res, next) => {
         next(err);
     }
 };
+
+
+
 const fetchUserById = async (req, res, next) => {
     const {id} = req.params
     try {
@@ -75,6 +82,9 @@ const fetchUserById = async (req, res, next) => {
         next(err);
     }
 }; 
+
+
+
 const fetchAllUsers = async (req, res, next) => {
     try {
         const user = await userModel.find().select("-password")
@@ -91,6 +101,9 @@ const fetchAllUsers = async (req, res, next) => {
         next(err);
     }
 }; 
+
+
+
 const deleteUser = async (req,res,next)=>{
     try {
         const userId = req?.user?._id
@@ -112,9 +125,9 @@ const deleteUser = async (req,res,next)=>{
 }
 
 module.exports = {
-    getAllCandidates,
-    getAllEmployers,
     deleteUser,
     fetchUserById,
-    fetchAllUsers
+    fetchAllUsers,
+    getAllCandidates,
+    getAllEmployers
 }

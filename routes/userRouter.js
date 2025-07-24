@@ -1,15 +1,10 @@
 const express = require("express")
 const userRouter = express.Router()
-const {getAllUsers, getSingleUser,deleteUser, addUser} = require("../controllers/userController.js")
-
-userRouter.get("/",MiddlewareOne,MiddlewareTwo, getAllUsers)
-userRouter.post("/", addUser)
-userRouter.get("/:id",MiddlewareOne,MiddlewareTwo, getSingleUser)
-userRouter.delete("/:id",MiddlewareOne,MiddlewareTwo, deleteUser)
-
-// function isAbdullah() {
-//     console.log("I have modified something");
-//     console.log("What is going on there");
-// }
+const {
+    getAllCandidates,
+    getAllEmployers
+} = require("../controllers/userController")
+userRouter.get("/candidates", getAllCandidates)
+userRouter.get("/employers", getAllCandidates)
 
 module.exports = userRouter
