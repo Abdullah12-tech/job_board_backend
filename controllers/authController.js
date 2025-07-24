@@ -220,14 +220,25 @@ const verifyPasswordReset = async (req, res, next) => {
 const login = async (req, res, next) => {
     const { email, password } = req.body;
     try {
-        const user = await userModel.findOne({ email })
+        // Add .select('+password') to include the hidden password field
+        const user = await userModel.findOne({ email }).select('+password');
+        
         if (!user) {
             return res.status(400).json({
                 message: "Email or password incorrect",
                 status: "error"
-            })
+            });
         }
-        const passwordCorrect = await bcrypt.compare(password, user.password)
+
+        // Add check for missing password
+        if (!user.password) {
+            return res.status(400).json({
+                message: "Account not properly set up. Please reset your password.",
+                status: "error"
+            });
+        }
+
+        const passwordCorrect = await bcrypt.compare(password, user.password);
         if (!passwordCorrect) {
             return res.status(400).json({
                 message: "Invalid email or password",
@@ -251,10 +262,9 @@ const login = async (req, res, next) => {
             user
         })
     } catch (err) {
-        console.log(err);
-        next(err)
+        next(err);
     }
-}
+};
 
 module.exports = {
     signUp,

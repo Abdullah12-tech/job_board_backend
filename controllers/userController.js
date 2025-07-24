@@ -1,3 +1,4 @@
+const CandidateModel = require("../models/CandidateModel");
 const EmployerModel = require("../models/EmployerModel");
 const jobModel = require("../models/jobModel");
 const userModel = require("../models/userModel");
@@ -5,7 +6,19 @@ const userModel = require("../models/userModel");
 
 const getAllEmployers = async (req, res, next) => {
     try {
-        const employers = await userModel.find({ role: "employer" });
+        // Single query with proper population
+        const employers = await EmployerModel.find()
+            .populate({
+                path: 'userId',
+                select: 'name email role',
+                match: { role: 'employer' }
+            })
+            .populate({
+                path: 'jobs',
+                select: 'title status', // Only select necessary fields
+                model: 'Job'
+            });
+
         if (!employers || employers.length === 0) {
             return res.status(404).json({
                 message: "No employers found",
@@ -13,24 +26,24 @@ const getAllEmployers = async (req, res, next) => {
             });
         }
 
-        // Get employer details and jobs for each employer
-        const employersWithDetails = await Promise.all(employers.map(async (employer) => {
-            const employerDetails = await EmployerModel.findOne({ userId: employer._id })
-                .populate("userId", 'name email role');
-            const jobsPosted = await jobModel.find({ postedBy: employer._id });
-            
-            return {
-                employer: employerDetails,
-                jobs: jobsPosted
-            };
+        // Transform data on the server
+        const formattedEmployers = employers.map(employer => ({
+            _id: employer._id,
+            name: employer.userId?.name,
+            email: employer?.userId?.email,
+            logo: employer?.companyLogo,
+            location: employer?.companyLocation,
+            industry: employer?.industry,
+            description: employer?.companyDescription,
+            jobsCount: employer?.jobb?.length || 0
         }));
 
         return res.status(200).json({
-            data: employersWithDetails,
+            data: formattedEmployers,
             status: "success"
         });
     } catch (err) {
-        console.log(err);
+        console.error(err);
         next(err);
     }
 };
