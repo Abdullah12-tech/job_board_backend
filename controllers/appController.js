@@ -38,7 +38,7 @@ const applyJob = async (req, res, next) => {
   const {coverLetter} = req.body;
 
   try {
-    const userId = req.user?._id;
+    const userId = req?.user?._id;
 
     const alreadyApplied = await appModel.findOne({ applicants: userId, jobID: jobID });
     if (alreadyApplied) {

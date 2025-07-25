@@ -12,12 +12,11 @@ const jobSchema = new mongoose.Schema({
     },
     employer: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Employer",
-        required: true
+        ref: "employers",
     },
     postedBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "users",
         required: true
     },
     hrEmail: {
@@ -42,7 +41,7 @@ const jobSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    salary: {
+    salaryRange: {
         min: {
             type: Number,
             required: true
@@ -63,7 +62,6 @@ const jobSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        required: true
     },
     benefits: [String],
     requirements: [String],
@@ -94,14 +92,17 @@ const jobSchema = new mongoose.Schema({
     toObject: { virtuals: true }
 });
 
-// Indexes
-jobSchema.index({ title: 'text', description: 'text' });
-jobSchema.index({ employer: 1 });
-jobSchema.index({ postedBy: 1 });
-jobSchema.index({ status: 1 });
-jobSchema.index({ type: 1 });
-jobSchema.index({ workType: 1 });
-jobSchema.index({ category: 1 });
+// Optimized indexes
+jobSchema.index({ 
+    title: 'text', 
+    description: 'text',
+    skills: 'text',
+    location: 'text'
+});
+jobSchema.index({ employer: 1, status: 1 });
+jobSchema.index({ type: 1, workType: 1 });
+jobSchema.index({ deadline: 1 });
+jobSchema.index({ 'salary.min': 1, 'salary.max': 1 });
 
 const jobModel = mongoose.model("jobs", jobSchema);
 module.exports = jobModel;

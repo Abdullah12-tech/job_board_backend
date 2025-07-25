@@ -40,9 +40,9 @@ const signUp = async (req, res, next) => {
 
         // Create role-specific profile within the same transaction
         if (role === "candidate") {
-            await CandidateModel.create([{ user: user[0]._id, ...details }], { session });
+            await CandidateModel.create([{ userId: user[0]._id, ...details }], { session });
         } else if (role === "employer") {
-            await EmployerModel.create([{ user: user[0]._id, ...details }], { session });
+            await EmployerModel.create([{ userId: user[0]._id, ...details }], { session });
         }
 
         // If everything succeeds, commit the transaction

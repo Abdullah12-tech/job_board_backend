@@ -52,9 +52,9 @@ const updateCandidateProfile = async (req, res) => {
 
 const getCandidateProfile = async (req, res) => {
   try {
-    const userId = req.user.id; // From JWT middleware
+    const userId = req?.user?._id; // From JWT middleware
     
-    const candidate = await CandidateModel.findOne({ userId })
+    const candidate = await CandidateModel.findOne({ userId: userId })
       .populate('userId', 'name email role'); // Populate user details
 
     if (!candidate) {

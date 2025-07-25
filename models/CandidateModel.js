@@ -1,19 +1,16 @@
 const mongoose = require("mongoose");
 
 const candidateSchema = new mongoose.Schema({
-    user: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
+        ref: "users",
         unique: true
     },
     skills: {
         type: [String],
         required: [true, 'Skills are required'],
         validate: {
-            validator: function(v) {
-                return v.length > 0;
-            },
+            validator: v => v.length > 0,
             message: 'At least one skill is required'
         }
     },
@@ -23,15 +20,15 @@ const candidateSchema = new mongoose.Schema({
     },
     portfolio: {
         type: String,
-        match: [/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/, 'Please fill a valid URL']
+        match: [/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/, 'Please fill a valid URL']
     },
     linkedin: {
         type: String,
-        match: [/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/, 'Please fill a valid URL']
+        match: [/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/, 'Please fill a valid URL']
     },
     github: {
         type: String,
-        match: [/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/, 'Please fill a valid URL']
+        match: [/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/, 'Please fill a valid URL']
     },
     resume: {
         url: String,
@@ -79,10 +76,11 @@ const candidateSchema = new mongoose.Schema({
     toObject: { virtuals: true }
 });
 
-// Indexes
-candidateSchema.index({ user: 1 }, { unique: true });
+// Optimized indexes
 candidateSchema.index({ skills: 1 });
 candidateSchema.index({ status: 1 });
+candidateSchema.index({ preferredJobTypes: 1 });
+candidateSchema.index({ preferredLocations: 1 });
 
 const CandidateModel = mongoose.model("candidates", candidateSchema);
 module.exports = CandidateModel;

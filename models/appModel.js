@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-const appSchema = new mongoose.Schema({
-    applicant: {  // Changed from "applicants" to "applicant" since it's a single reference
+const applicationSchema = new mongoose.Schema({
+    applicant: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "users"
@@ -22,9 +22,9 @@ const appSchema = new mongoose.Schema({
     coverLetter: {
         type: String
     },
-    job: {  // Changed from "jobID" to "job" for consistency
+    jobID: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "jobs",
+        ref: "Job",
         required: true
     },
     notes: {
@@ -34,15 +34,14 @@ const appSchema = new mongoose.Schema({
         type: String
     }
 }, {
-    timestamps: true,  // Adds createdAt and updatedAt automatically
+    timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 });
 
-// Add indexing for better query performance
-appSchema.index({ applicant: 1 });
-appSchema.index({ job: 1 });
-appSchema.index({ status: 1 });
+// Optimized indexes
+applicationSchema.index({ applicant: 1, job: 1 }, { unique: true }); // Prevent duplicate applications
+applicationSchema.index({ status: 1 });
 
-const appModel = mongoose.model("applications", appSchema);
+const appModel = mongoose.model("applications", applicationSchema);
 module.exports = appModel;

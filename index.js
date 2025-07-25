@@ -1,7 +1,6 @@
 const express = require("express")
 const app = express()
 const cors = require("cors")
-// const userRouter = require("./routes/userRouter")
 const connectToDb = require("./config/connectToDb")
 const authRouter = require("./routes/authRouter")
 const morgan = require("morgan")

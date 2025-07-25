@@ -52,10 +52,9 @@ const userSchema = new mongoose.Schema({
     toObject: { virtuals: true }
 });
 
-// Indexes
-userSchema.index({ email: 1 }, { unique: true });
-userSchema.index({ role: 1 });
-userSchema.index({ status: 1 });
+// Optimized indexes
+userSchema.index({ role: 1, status: 1 });
+userSchema.index({ isVerified: 1 });
 
 const userModel = mongoose.model("users", userSchema);
 module.exports = userModel;
