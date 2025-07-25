@@ -15,7 +15,7 @@ const {
     getAllCompanies,
     approveCompany,
     rejectCompany
- } = require("../controllers/AdminController");
+ } = require("../controllers/adminController");
 
 const adminRouter = express.Router();
 
