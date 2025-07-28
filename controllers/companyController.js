@@ -59,7 +59,7 @@ const updateProfile = async (req, res,next) => {
       location: profile.location,
       phone: profile.phone,
       email: profile.companyEmail,
-      companyLogoUrl: profile.companyLogoUrl
+      companyLogoUrl: profile.companyLogo
     };
     res.json({ message: 'Profile updated successfully', profile: mappedProfile });
   } catch (error) {

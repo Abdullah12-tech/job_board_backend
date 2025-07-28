@@ -65,7 +65,9 @@ const applyJob = async (req, res, next) => {
             status: "error"
         })
     }
-
+    await jobModel.findByIdAndUpdate(job?._id, {
+      applicationsCount: applicationsCount + 1
+    })
     await sendApplicationFeedback({
       applicantEmail: credentials?.applicant?.email,
       applicantName: credentials?.applicant?.name?.split(" ")[0] || "Applicant",
