@@ -1,6 +1,7 @@
 const express = require("express")
 const app = express()
 const cors = require("cors")
+const env = require("dotenv");
 const connectToDb = require("./config/connectToDb")
 const authRouter = require("./routes/authRouter")
 const morgan = require("morgan")
@@ -15,7 +16,13 @@ require("./services/nodemailer/transporter")
 app.use(express.json())
 app.use(express.json({ limit: '10mb' })); // For JSON payloads
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
-app.use(cors())
+env.config();
+const allowedOrigin = process.env.client_domain
+app.use(cors({
+  origin: allowedOrigin,
+  credentials: true // only if using cookies or sessions
+}));
+
 app.use(morgan("dev"))
 const port = 4000
 app.listen(port,()=>{
