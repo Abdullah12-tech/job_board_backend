@@ -13,6 +13,8 @@ const adminRouter = require("./routes/AdminRouter")
 const userRouter = require("./routes/userRouter")
 require("./services/nodemailer/transporter")
 app.use(express.json())
+app.use(express.json({ limit: '10mb' })); // For JSON payloads
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(cors())
 app.use(morgan("dev"))
 const port = 4000

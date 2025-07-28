@@ -24,7 +24,7 @@ const applicationSchema = new mongoose.Schema({
     },
     jobID: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Job",
+        ref: "jobs",
         required: true
     },
     notes: {

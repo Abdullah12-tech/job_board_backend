@@ -41,7 +41,7 @@ const employerSchema = new mongoose.Schema({
     industry: {
         type: String,
     },
-    logo: {
+    companyLogo: {
         url: String,
         publicId: String
     },

@@ -14,22 +14,10 @@ const candidateSchema = new mongoose.Schema({
             message: 'At least one skill is required'
         }
     },
-    headline: {
-        type: String,
-        maxlength: [120, 'Headline cannot be more than 120 characters']
-    },
-    portfolio: {
-        type: String,
-        match: [/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/, 'Please fill a valid URL']
-    },
-    linkedin: {
-        type: String,
-        match: [/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/, 'Please fill a valid URL']
-    },
-    github: {
-        type: String,
-        match: [/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/, 'Please fill a valid URL']
-    },
+    headline: String,
+    portfolio: String,
+    linkedin: String,
+    github: String,
     resume: {
         url: String,
         publicId: String
@@ -38,8 +26,9 @@ const candidateSchema = new mongoose.Schema({
         institution: String,
         degree: String,
         fieldOfStudy: String,
-        startYear: Number,
-        endYear: Number,
+        startDate: Date,
+        endDate: Date,
+        currentlyStudying: Boolean,
         description: String
     }],
     experience: [{
@@ -48,7 +37,7 @@ const candidateSchema = new mongoose.Schema({
         location: String,
         startDate: Date,
         endDate: Date,
-        current: Boolean,
+        currentlyWorking: Boolean,
         description: String
     }],
     status: {
@@ -76,7 +65,7 @@ const candidateSchema = new mongoose.Schema({
     toObject: { virtuals: true }
 });
 
-// Optimized indexes
+// Indexes
 candidateSchema.index({ skills: 1 });
 candidateSchema.index({ status: 1 });
 candidateSchema.index({ preferredJobTypes: 1 });

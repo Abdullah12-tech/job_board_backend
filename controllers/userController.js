@@ -6,18 +6,13 @@ const userModel = require("../models/userModel");
 
 const getAllEmployers = async (req, res, next) => {
     try {
-        // Single query with proper population
-        const employers = await EmployerModel.find()
+        const employers = await EmployerModel.find() // Only approved employers
             .populate({
                 path: 'userId',
                 select: 'name email role',
                 match: { role: 'employer' }
             })
-            .populate({
-                path: 'jobs',
-                select: 'title status', // Only select necessary fields
-                model: 'Job'
-            });
+        const jobs = await jobModel.find({postedBy: employers?.userId?._id});
 
         if (!employers || employers.length === 0) {
             return res.status(404).json({
@@ -26,16 +21,18 @@ const getAllEmployers = async (req, res, next) => {
             });
         }
 
-        // Transform data on the server
         const formattedEmployers = employers.map(employer => ({
             _id: employer._id,
-            name: employer.userId?.name,
-            email: employer?.userId?.email,
-            logo: employer?.companyLogo,
-            location: employer?.companyLocation,
-            industry: employer?.industry,
-            description: employer?.companyDescription,
-            jobsCount: employer?.jobb?.length || 0
+            name: employer?.companyName,
+            email: employer.userId?.email || employer.companyEmail,
+            website: employer.companyWebsite,
+            logo: employer.companyLogo?.url || 'https://placeholder.com/200x200',
+            location: employer.location,
+            industry: employer.industry,
+            description: employer.companyDescription,
+            jobsCount: jobs?.length || 0,
+            companySize: employer.companySize,
+            linkedin: employer.companyLinkedin
         }));
 
         return res.status(200).json({
@@ -46,6 +43,74 @@ const getAllEmployers = async (req, res, next) => {
         console.error(err);
         next(err);
     }
+};
+
+const getEmployerById = async (req, res, next) => {
+    const {id} = req.params
+    try {
+        const employer = await EmployerModel.findById(id)
+            .populate({
+                path: 'userId',
+                select: 'name email role'
+            })
+        const jobs = await jobModel.findOne({postedBy: employer?.userId?._id}).select('title description salary location type createdAt');
+
+        if (!employer) {
+            return res.status(404).json({
+                message: "Employer not found",
+                status: "error"
+            });
+        }
+
+        const formattedEmployer = {
+            _id: employer._id,
+            name: employer?.companyName,
+            email: employer.userId?.email || employer.companyEmail,
+            website: employer.companyWebsite,
+            logo: employer.companyLogo?.url || 'https://placeholder.com/200x200',
+            location: employer.location,
+            industry: employer.industry,
+            description: employer.companyDescription,
+            jobs: jobs || [],
+            companySize: employer.companySize,
+            linkedin: employer.companyLinkedin,
+            phone: employer.phone,
+            isVerified: employer.verification?.isVerified || false
+        };
+
+        return res.status(200).json({
+            data: formattedEmployer,
+            status: "success"
+        });
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+};
+const getCandidateById = async (req, res, next) => {
+  try {
+    const candidateId = req.params.id;
+    
+    // Find the candidate document
+    const candidate = await CandidateModel.findOne({ userId: candidateId })
+      .populate("userId", 'name email profilePicture role')
+      .lean();
+    
+    if (!candidate) {
+      return res.status(404).json({
+        message: "Candidate not found",
+        status: "error"
+      });
+    }
+
+    return res.status(200).json({
+      data: candidate,
+      status: "success"
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
 };
 
 
@@ -142,5 +207,7 @@ module.exports = {
     fetchUserById,
     fetchAllUsers,
     getAllCandidates,
-    getAllEmployers
+    getAllEmployers,
+    getEmployerById,
+    getCandidateById
 }

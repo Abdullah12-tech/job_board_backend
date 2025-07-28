@@ -7,7 +7,7 @@ const sendEmployerNotification = require("../services/nodemailer/sendEmployerFee
 const getAllApplicationsForCurrentUser = async (req, res, next) => {
   try {
     const user = req.user;
-    const applications = await appModel.find({ applicants: user._id }).populate("jobID")
+    const applications = await appModel.find({ applicant: user._id }).populate("jobID")
     if (!applications.length) {
       return res.status(400).json({
         message: "No application found for this user",
@@ -23,7 +23,7 @@ const getAllApplicationsForCurrentUser = async (req, res, next) => {
 
 const applyJob = async (req, res, next) => {
   console.log("📄 Uploaded resume:", req.file);
-  if (!req?.file?.path || !req?.file?.url) {
+  if (!req?.file || !req?.file) {
     return res.status(400).json({ message: "Resume file not found", status: "error" });
   }
 
@@ -40,7 +40,7 @@ const applyJob = async (req, res, next) => {
   try {
     const userId = req?.user?._id;
 
-    const alreadyApplied = await appModel.findOne({ applicants: userId, jobID: jobID });
+    const alreadyApplied = await appModel.findOne({ applicant: userId, jobID: jobID });
     if (alreadyApplied) {
       return res.status(400).json({ message: "You have already applied to this job", status: "error" });
     }
@@ -48,7 +48,7 @@ const applyJob = async (req, res, next) => {
     const application = await appModel.create({
       coverLetter,
       resume: resume,
-      applicants: userId,
+      applicant: userId,
       jobID: jobID
     });
 
@@ -56,7 +56,7 @@ const applyJob = async (req, res, next) => {
       return res.status(400).json({ message: "Application failed", status: "error" });
     }
 
-    const credentials = await appModel.findById(application._id).populate("jobID applicants");
+    const credentials = await appModel.findById(application._id).populate("jobID applicant");
     const job = await jobModel.findById(credentials.jobID._id).populate("postedBy");
     const employer = await EmployerModel.findOne({userId: job?.postedBy?._id});
     if(!employer){
@@ -67,15 +67,15 @@ const applyJob = async (req, res, next) => {
     }
 
     await sendApplicationFeedback({
-      applicantEmail: credentials?.applicants?.email,
-      applicantName: credentials?.applicants?.name?.split(" ")[0] || "Applicant",
+      applicantEmail: credentials?.applicant?.email,
+      applicantName: credentials?.applicant?.name?.split(" ")[0] || "Applicant",
       jobTitle: credentials.jobID?.title,
       companyName: employer?.companyName || "the company"
     });
     await sendEmployerNotification({
       employerEmail: credentials?.jobID?.hrEmail,
       employerName: employer?.companyName,
-      applicantName: credentials?.applicants?.name,
+      applicantName: credentials?.applicant?.name,
       jobTitle: credentials?.jobID?.title,
       resumeLink: application?.resume,
       coverLetterText: coverLetter
