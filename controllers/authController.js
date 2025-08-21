@@ -85,7 +85,7 @@ const resendVerification = async (req, res) => {
 
     // Generate new token and expiration
     const token = randomGenerate(8);
-    const verificationExp = Date.now() + 3000000; // 50 minutes
+    const verificationExp = Date.now() + 3000000; 
     
     // Update user with new token
     user.verificationToken = token;
