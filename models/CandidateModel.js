@@ -2,9 +2,10 @@ const mongoose = require("mongoose");
 
 const candidateSchema = new mongoose.Schema({
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.ObjectId,
         ref: "users",
-        unique: true
+        unique: true,
+        required: true
     },
     skills: {
         type: [String],

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const employerSchema = new mongoose.Schema({
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.ObjectId,
         ref: "users",
         required: true,
         unique: true
