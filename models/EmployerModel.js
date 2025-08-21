@@ -68,10 +68,10 @@ const employerSchema = new mongoose.Schema({
 });
 
 // Optimized indexes
-employerSchema.index({ companyName: 'text', companyDescription: 'text' });
-employerSchema.index({ status: 1 });
-employerSchema.index({ industry: 1 });
-employerSchema.index({ location: 1 });
+// employerSchema.index({ companyName: 'text', companyDescription: 'text' });
+// employerSchema.index({ status: 1 });
+// employerSchema.index({ industry: 1 });
+// employerSchema.index({ location: 1 });
 
 const EmployerModel = mongoose.model("employers", employerSchema);
 module.exports = EmployerModel;

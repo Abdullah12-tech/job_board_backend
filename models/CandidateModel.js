@@ -67,10 +67,10 @@ const candidateSchema = new mongoose.Schema({
 });
 
 // Indexes
-candidateSchema.index({ skills: 1 });
-candidateSchema.index({ status: 1 });
-candidateSchema.index({ preferredJobTypes: 1 });
-candidateSchema.index({ preferredLocations: 1 });
+// candidateSchema.index({ skills: 1 });
+// candidateSchema.index({ status: 1 });
+// candidateSchema.index({ preferredJobTypes: 1 });
+// candidateSchema.index({ preferredLocations: 1 });
 
 const CandidateModel = mongoose.model("candidates", candidateSchema);
 module.exports = CandidateModel;

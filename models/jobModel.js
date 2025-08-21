@@ -99,10 +99,10 @@ jobSchema.index({
     skills: 'text',
     location: 'text'
 });
-jobSchema.index({ employer: 1, status: 1 });
-jobSchema.index({ type: 1, workType: 1 });
-jobSchema.index({ deadline: 1 });
-jobSchema.index({ 'salary.min': 1, 'salary.max': 1 });
+// jobSchema.index({ employer: 1, status: 1 });
+// jobSchema.index({ type: 1, workType: 1 });
+// jobSchema.index({ deadline: 1 });
+// jobSchema.index({ 'salary.min': 1, 'salary.max': 1 });
 
 const jobModel = mongoose.model("jobs", jobSchema);
 module.exports = jobModel;

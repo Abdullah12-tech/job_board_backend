@@ -40,8 +40,8 @@ const applicationSchema = new mongoose.Schema({
 });
 
 // Optimized indexes
-applicationSchema.index({ applicant: 1, job: 1 }, { unique: true }); // Prevent duplicate applications
-applicationSchema.index({ status: 1 });
+// applicationSchema.index({ applicant: 1, job: 1 }, { unique: true }); // Prevent duplicate applications
+// applicationSchema.index({ status: 1 });
 
 const appModel = mongoose.model("applications", applicationSchema);
 module.exports = appModel;
