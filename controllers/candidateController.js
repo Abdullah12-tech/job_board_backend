@@ -56,7 +56,7 @@ const updateCandidateProfile = async (req, res) => {
     const formattedResponse = {
       ...updatedProfile.toObject(),
       userId: undefined,
-      experiences: updatedProfile.experiences.map(exp => ({
+      experiences: updatedProfile.experience.map(exp => ({
         ...exp,
         startDate: exp.startDate?.toISOString().split('T')[0],
         endDate: exp.endDate?.toISOString().split('T')[0],

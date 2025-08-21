@@ -78,7 +78,7 @@ const updateJob = async (req,res,next)=>{
 
 const getAllJobs = async (req,res,next)=>{
     try {
-        const jobs = await jobModel.find({status: "active"}).populate("postedBy")
+        const jobs = await jobModel.find().populate("postedBy")
         if(!jobs){
             return res.status(400).json({
                 message: "No jobs found",
