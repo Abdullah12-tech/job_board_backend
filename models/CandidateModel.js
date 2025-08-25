@@ -23,6 +23,10 @@ const candidateSchema = new mongoose.Schema({
         url: String,
         publicId: String
     },
+    location: {
+        type: String,
+        default: "Nigeria"
+    },
     education: [{
         institution: String,
         degree: String,
